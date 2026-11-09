@@ -1,0 +1,347 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { AtelierOrder, BulkContract, ClientMeasurementCard, RTWItem } from '../types/atelier';
+
+export const INITIAL_RTW_ITEMS: RTWItem[] = [
+  {
+    id: 'rtw-01',
+    title: 'The Sovereign Senator Kaftan',
+    tier: 'classic',
+    category: 'mens_traditional',
+    priceNGN: 68500,
+    description: 'Precision-tailored two-piece Senator suit crafted in midnight blue cashmere-wool with crisp geometric hand-embroidery along the mandarin placket.',
+    fabric: 'Italian Cashmere-Wool Blend & Bronze Silk Thread',
+    availableSizes: ['S', 'M', 'L', 'XL', 'XXL'],
+    stockCount: 4,
+    image: '/src/assets/images/rtw_mens_senator_agbada_1794057023495.jpg',
+    highlights: ['Includes tapered trousers with hidden expander', 'Concealed front zip placket', 'Breathable cotton pocket lining']
+  },
+  {
+    id: 'rtw-02',
+    title: 'Erewa Architectural Ankara Gown',
+    tier: 'premium',
+    category: 'womens_contemporary',
+    priceNGN: 145000,
+    description: 'Runway-featured sculpted evening gown blending authentic Dutch wax Ankara in warm terracotta and ochre with structured boning and dramatic cascading train.',
+    fabric: 'Authentic Nigerian Ankara Wax & Stiffened Tulle Foundation',
+    availableSizes: ['UK 8', 'UK 10', 'UK 12', 'UK 14'],
+    stockCount: 2,
+    image: '/src/assets/images/rtw_womens_ankara_evening_1794057025772.jpg',
+    highlights: ['Internal corset with 12 flexible steel bones', 'High-slit architectural draping', 'Double-faced French seams']
+  },
+  {
+    id: 'rtw-03',
+    title: 'Imperial Agbada Grand 3-Piece',
+    tier: 'premium',
+    category: 'mens_traditional',
+    priceNGN: 220000,
+    description: 'Ceremonial 3-piece grand Agbada ensemble featuring flowing outer robe with hand-drawn royal geometric chest embroidery, inner long-sleeve buba, and matching sokoto.',
+    fabric: 'Heavy Damask Wool & Metallic Bullion Cordwork',
+    availableSizes: ['M', 'L', 'XL'],
+    stockCount: 3,
+    image: '/src/assets/images/hero_african_luxury_couture_1794057022168.jpg',
+    highlights: ['Full 160-inch shoulder drape span', 'Hand-stitched bullion neck cordon', 'Custom matching fila cap included']
+  },
+  {
+    id: 'rtw-04',
+    title: 'Kwara Minimalist Kaftan Shirt',
+    tier: 'affordable',
+    category: 'mens_contemporary',
+    priceNGN: 32000,
+    description: 'Crisp everyday breathable cotton tunic shirt with asymmetric button detail and clean side vents. Perfect for contemporary professional settings.',
+    fabric: '100% Breathable Crisp Cotton Poplin',
+    availableSizes: ['S', 'M', 'L', 'XL'],
+    stockCount: 8,
+    image: '/src/assets/images/studio_tailoring_craftsmanship_1794057024690.jpg',
+    highlights: ['Reinforced collar stays', 'Machine washable cold', 'Understated mother-of-pearl buttons']
+  }
+];
+
+export const INITIAL_MEASUREMENT_CARDS: ClientMeasurementCard[] = [
+  {
+    id: 'meas-01',
+    fullName: 'Chief Adeleke Ogundipe',
+    gender: 'male',
+    phone: '+234 803 456 7890',
+    email: 'adeleke.ogundipe@example.ng',
+    city: 'Victoria Island, Lagos',
+    notes: 'Prefers roomy armholes for Agbada. Left shoulder sits 0.5 inch lower.',
+    unit: 'inches',
+    updatedAt: '2026-10-15',
+    neck: 17.5,
+    chestOrBust: 44.0,
+    waist: 38.5,
+    shoulderWidth: 19.5,
+    sleeveLength: 26.0,
+    bicep: 16.0,
+    wrist: 8.5,
+    shirtOrTopLength: 36.0,
+    trouserOrSkirtLength: 42.5,
+    thigh: 27.0,
+    ankleOrHem: 15.5,
+    agbadaSpan: 68.0,
+    agbadaLength: 54.0,
+    capOrFilaSize: 23.5
+  },
+  {
+    id: 'meas-02',
+    fullName: 'Dr. Amina Bello-Kano',
+    gender: 'female',
+    phone: '+234 812 345 6789',
+    email: 'amina.bello@lagoshealth.org',
+    city: 'Maitama, Abuja',
+    notes: 'Strict modesty neckline preferences. High-waisted trouser rise.',
+    unit: 'inches',
+    updatedAt: '2026-10-28',
+    neck: 14.5,
+    chestOrBust: 38.0,
+    underbust: 32.0,
+    waist: 30.0,
+    highHip: 38.0,
+    fullHip: 42.5,
+    shoulderWidth: 16.0,
+    sleeveLength: 24.5,
+    shirtOrTopLength: 28.0,
+    trouserOrSkirtLength: 41.0,
+    waistToKnee: 24.0,
+    thigh: 24.0
+  },
+  {
+    id: 'meas-03',
+    fullName: 'Tunde & Simi Balogun',
+    gender: 'female',
+    phone: '+234 802 987 6543',
+    email: 'simi.balogun@creativestudio.com',
+    city: 'Lekki Phase 1, Lagos',
+    notes: 'Wedding reception custom dress fitting in December.',
+    unit: 'inches',
+    updatedAt: '2026-11-02',
+    neck: 14.0,
+    chestOrBust: 36.0,
+    underbust: 30.0,
+    waist: 28.0,
+    fullHip: 40.0,
+    shoulderWidth: 15.5,
+    sleeveLength: 23.5,
+    trouserOrSkirtLength: 44.0
+  }
+];
+
+export const INITIAL_ORDERS: AtelierOrder[] = [
+  {
+    id: 'KLM-1021',
+    clientName: 'Chief Adeleke Ogundipe',
+    clientPhone: '+234 803 456 7890',
+    clientEmail: 'adeleke.ogundipe@example.ng',
+    division: 'custom_tailoring',
+    garmentCategory: 'mens_traditional',
+    garmentTitle: 'Ceremonial Royal Navy Agbada 3-Piece',
+    tier: 'premium',
+    stage: 6, // In Production
+    createdAt: '2026-10-20',
+    targetDeliveryDate: '2026-11-14',
+    fabricSource: 'atelier_sourced',
+    fabricDescription: 'Imported Super 150s Merino Wool in Midnight Obsidian with gold hand-embroidered crest.',
+    colorPalette: 'Obsidian Navy & Sahara Gold',
+    specialInstructions: 'Ensure matching Fila cap is sized to 23.5 inches with stiffened crown.',
+    measurementCardId: 'meas-01',
+    costBreakdown: {
+      fabricYardage: 7.5,
+      fabricCostPerYard: 12000,
+      fabricTotal: 90000,
+      notionsAndTrimsCost: 15000,
+      embroideryCost: 35000,
+      tailorLaborCost: 40000,
+      packagingAndTagsCost: 5000,
+      studioOverheadShare: 15000,
+      totalCost: 195000,
+      markupPercentage: 35,
+      recommendedRetailPrice: 265000,
+      minimumRequiredDepositPercentage: 65,
+      requiredDepositAmount: 172250
+    },
+    quotedPrice: 265000,
+    depositAmount: 180000,
+    depositPaid: true,
+    depositPaidAt: '2026-10-22',
+    finalPaymentPaid: false,
+    assignedTailorType: 'in_house',
+    assignedTailorName: 'Master Ibrahim (Lead Artisan)',
+    assignedTailorPhone: '+234 805 111 2233',
+    qualityCheckPassed: false,
+    history: [
+      { stage: 1, timestamp: '2026-10-20 09:30', note: 'Customer reached out via WhatsApp inquiry for upcoming chieftaincy title.' },
+      { stage: 2, timestamp: '2026-10-21 14:00', note: 'Selected Sovereign 3-Piece Agbada with bullion knot embroidery.' },
+      { stage: 3, timestamp: '2026-10-21 16:30', note: 'Measurements retrieved from client vault; verified arm span 68 inches.' },
+      { stage: 4, timestamp: '2026-10-22 11:15', note: 'Deposit of ₦180,000 received via GTBank transfer. Receipt issued.' },
+      { stage: 5, timestamp: '2026-10-24 10:00', note: '7.5 yards Super 150s Wool and German interfacing sourced from Balogun market.' },
+      { stage: 6, timestamp: '2026-10-26 08:30', note: 'Pattern cut and sent to master embroidery frame.' }
+    ]
+  },
+  {
+    id: 'KLM-1022',
+    clientName: 'Dr. Amina Bello-Kano',
+    clientPhone: '+234 812 345 6789',
+    clientEmail: 'amina.bello@lagoshealth.org',
+    division: 'custom_tailoring',
+    garmentCategory: 'womens_contemporary',
+    garmentTitle: 'Corporate Kaftan & Trousers in Emerald Cashmere',
+    tier: 'classic',
+    stage: 8, // Client Fitting
+    createdAt: '2026-10-14',
+    targetDeliveryDate: '2026-11-10',
+    fabricSource: 'atelier_sourced',
+    fabricDescription: 'Forest green fine cashmere-cotton blend with discreet bronze piping along collar.',
+    colorPalette: 'Imperial Emerald & Warm Sand',
+    measurementCardId: 'meas-02',
+    costBreakdown: {
+      fabricYardage: 4.5,
+      fabricCostPerYard: 8000,
+      fabricTotal: 36000,
+      notionsAndTrimsCost: 8000,
+      embroideryCost: 10000,
+      tailorLaborCost: 22000,
+      packagingAndTagsCost: 3500,
+      studioOverheadShare: 8000,
+      totalCost: 87500,
+      markupPercentage: 40,
+      recommendedRetailPrice: 122500,
+      minimumRequiredDepositPercentage: 60,
+      requiredDepositAmount: 73500
+    },
+    quotedPrice: 120000,
+    depositAmount: 75000,
+    depositPaid: true,
+    depositPaidAt: '2026-10-15',
+    finalPaymentPaid: false,
+    assignedTailorType: 'in_house',
+    assignedTailorName: 'Grace Adele (In-House Tailor)',
+    assignedTailorPhone: '+234 809 444 5566',
+    qualityCheckPassed: true,
+    qualityCheckNotes: 'Seams double-stitched, collar symmetry verified, blind hem on trousers pristine.',
+    history: [
+      { stage: 1, timestamp: '2026-10-14 11:00', note: 'Inquiry for executive conference attire.' },
+      { stage: 4, timestamp: '2026-10-15 15:45', note: 'Deposit of ₦75,000 confirmed.' },
+      { stage: 7, timestamp: '2026-11-03 16:00', note: 'Garment passed rigorous studio finishing inspection.' },
+      { stage: 8, timestamp: '2026-11-05 10:00', note: 'Fitting scheduled at studio workspace.' }
+    ]
+  },
+  {
+    id: 'KLM-1023',
+    clientName: 'Engr. Femi Alabi',
+    clientPhone: '+234 803 777 8899',
+    division: 'ready_to_wear',
+    garmentCategory: 'mens_traditional',
+    garmentTitle: 'The Sovereign Senator Kaftan (Size XL)',
+    tier: 'classic',
+    stage: 4, // Deposit Secured / Payment
+    createdAt: '2026-11-05',
+    targetDeliveryDate: '2026-11-09',
+    fabricSource: 'atelier_sourced',
+    fabricDescription: 'Italian Cashmere-Wool Blend in Midnight Blue',
+    colorPalette: 'Midnight Blue & Bronze',
+    costBreakdown: {
+      fabricYardage: 4.0,
+      fabricCostPerYard: 7500,
+      fabricTotal: 30000,
+      notionsAndTrimsCost: 6500,
+      embroideryCost: 8000,
+      tailorLaborCost: 15000,
+      packagingAndTagsCost: 3000,
+      studioOverheadShare: 6000,
+      totalCost: 68500,
+      markupPercentage: 0,
+      recommendedRetailPrice: 68500,
+      minimumRequiredDepositPercentage: 100,
+      requiredDepositAmount: 68500
+    },
+    quotedPrice: 68500,
+    depositAmount: 68500,
+    depositPaid: true,
+    depositPaidAt: '2026-11-05',
+    finalPaymentPaid: true,
+    assignedTailorType: 'in_house',
+    assignedTailorName: 'Inventory Dispatch',
+    qualityCheckPassed: true,
+    history: [
+      { stage: 1, timestamp: '2026-11-05 12:10', note: 'Selected from online ready-to-wear showcase.' },
+      { stage: 4, timestamp: '2026-11-05 12:20', note: 'Full payment of ₦68,500 cleared via direct transfer.' }
+    ]
+  },
+  {
+    id: 'KLM-1024',
+    clientName: 'Ngozi & Kalu Ezera',
+    clientPhone: '+234 818 222 3344',
+    division: 'custom_tailoring',
+    garmentCategory: 'wedding_occasion',
+    garmentTitle: 'Handwoven Aso-Oke Traditional Wedding Ensemble',
+    tier: 'premium',
+    stage: 2, // Design Selected / Pending Deposit
+    createdAt: '2026-11-06',
+    targetDeliveryDate: '2026-12-05',
+    fabricSource: 'atelier_sourced',
+    fabricDescription: 'Custom handloomed champagne and terracotta Aso-Oke with crystal beading.',
+    colorPalette: 'Terracotta & Burnished Champagne',
+    costBreakdown: {
+      fabricYardage: 12.0,
+      fabricCostPerYard: 14000,
+      fabricTotal: 168000,
+      notionsAndTrimsCost: 25000,
+      embroideryCost: 45000,
+      tailorLaborCost: 60000,
+      packagingAndTagsCost: 7000,
+      studioOverheadShare: 20000,
+      totalCost: 325000,
+      markupPercentage: 38,
+      recommendedRetailPrice: 448500,
+      minimumRequiredDepositPercentage: 65,
+      requiredDepositAmount: 291525
+    },
+    quotedPrice: 450000,
+    depositAmount: 295000,
+    depositPaid: false,
+    finalPaymentPaid: false,
+    assignedTailorType: 'external_partner',
+    assignedTailorName: 'Madam Folake (Master Aso-Oke Loom Partner)',
+    assignedTailorPhone: '+234 802 333 4455',
+    qualityCheckPassed: false,
+    history: [
+      { stage: 1, timestamp: '2026-11-06 10:15', note: 'Bride and groom traditional wedding consultation.' },
+      { stage: 2, timestamp: '2026-11-06 15:30', note: 'Agreed on custom terracotta handwoven Aso-Oke pattern.' }
+    ]
+  }
+];
+
+export const INITIAL_BULK_CONTRACTS: BulkContract[] = [
+  {
+    id: 'BLK-01',
+    organizationName: 'Covenant Heights Private Academy',
+    contractType: 'school_uniform',
+    contactPerson: 'Mr. David Adebayo (Bursar)',
+    phone: '+234 803 222 1100',
+    quantityPieces: 120,
+    unitPriceNGN: 14500,
+    totalContractValueNGN: 1740000,
+    depositPaidNGN: 1100000,
+    status: 'mass_production',
+    deliveryDeadline: '2026-11-25',
+    notes: 'Senior secondary blazer and skirt/trouser sets in navy twill with gold crest embroidery.'
+  },
+  {
+    id: 'BLK-02',
+    organizationName: 'L’Afrique Luxury Boutique Hotel',
+    contractType: 'hospitality',
+    contactPerson: 'Mrs. Funke Solanke',
+    phone: '+234 813 999 8877',
+    quantityPieces: 35,
+    unitPriceNGN: 22000,
+    totalContractValueNGN: 770000,
+    depositPaidNGN: 500000,
+    status: 'fabric_procurement',
+    deliveryDeadline: '2026-12-01',
+    notes: 'Front desk and concierge modern tailored kaftans with terracotta trim.'
+  }
+];
