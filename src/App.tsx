@@ -7,6 +7,7 @@ import React from 'react';
 import { AtelierProvider, useAtelier } from './context/AtelierContext';
 import { TopBar } from './components/common/TopBar';
 import { ToastContainer } from './components/common/ToastContainer';
+import { VoiceConcierge } from './components/common/VoiceConcierge';
 import { HeroSection } from './components/client/HeroSection';
 import { RTWCollection } from './components/client/RTWCollection';
 import { BespokeBuilder } from './components/client/BespokeBuilder';
@@ -169,6 +170,7 @@ const AtelierMainContent: React.FC = () => {
       </footer>
 
       <ToastContainer />
+      <VoiceConcierge />
     </div>
   );
 };
