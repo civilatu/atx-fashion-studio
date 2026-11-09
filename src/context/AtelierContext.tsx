@@ -76,6 +76,20 @@ interface AtelierContextType {
   generateWhatsAppOrderMessage: (order: AtelierOrder) => string;
   generateWhatsAppInvoice: (order: AtelierOrder) => string;
   
+  // Studio OS Security & Bank Details
+  isStudioUnlocked: boolean;
+  unlockStudio: (pin: string) => boolean;
+  lockStudio: () => void;
+  studioPin: string;
+  setStudioPin: (pin: string) => void;
+  bankDetails: {
+    bankName: string;
+    accountNumber: string;
+    accountName: string;
+    note: string;
+  };
+  updateBankDetails: (details: Partial<{ bankName: string; accountNumber: string; accountName: string; note: string }>) => void;
+
   resetToDefaults: () => void;
   exportDatabaseJSON: () => void;
   importDatabaseJSON: (jsonString: string) => boolean;
@@ -132,6 +146,97 @@ export const AtelierProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [activeStudioTab, setActiveStudioTab] = useState<'pipeline' | 'costing' | 'measurements' | 'bulk' | 'analytics'>('pipeline');
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [toasts, setToasts] = useState<Toast[]>([]);
+
+  // Studio OS Security PIN (Default: '2026')
+  const [studioPin, setStudioPinState] = useState<string>(() => {
+    try {
+      return localStorage.getItem('atx_studio_pin') || '2026';
+    } catch {
+      return '2026';
+    }
+  });
+
+  const [isStudioUnlocked, setIsStudioUnlocked] = useState<boolean>(() => {
+    try {
+      return sessionStorage.getItem('atx_studio_unlocked') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  // Studio Official Bank Details for Deposits
+  const [bankDetails, setBankDetails] = useState<{
+    bankName: string;
+    accountNumber: string;
+    accountName: string;
+    note: string;
+  }>(() => {
+    try {
+      const saved = localStorage.getItem('atx_studio_bank_details');
+      return saved ? JSON.parse(saved) : {
+        bankName: 'First Bank of Nigeria',
+        accountNumber: '08150882291',
+        accountName: 'ATX TECHNOLOGIES / ATX FASHION STUDIO',
+        note: 'Kindly use your Order Reference ID in the transfer narration and send receipt via WhatsApp.'
+      };
+    } catch {
+      return {
+        bankName: 'First Bank of Nigeria',
+        accountNumber: '08150882291',
+        accountName: 'ATX TECHNOLOGIES / ATX FASHION STUDIO',
+        note: 'Kindly use your Order Reference ID in the transfer narration and send receipt via WhatsApp.'
+      };
+    }
+  });
+
+  const setStudioPin = (newPin: string) => {
+    setStudioPinState(newPin);
+    try {
+      localStorage.setItem('atx_studio_pin', newPin);
+    } catch (e) {
+      console.error(e);
+    }
+    showToast('Studio OS PIN updated successfully', 'success');
+  };
+
+  const unlockStudio = (enteredPin: string): boolean => {
+    if (enteredPin === studioPin) {
+      setIsStudioUnlocked(true);
+      try {
+        sessionStorage.setItem('atx_studio_unlocked', 'true');
+      } catch (e) {
+        console.error(e);
+      }
+      showToast('Studio Management OS unlocked', 'success');
+      return true;
+    }
+    showToast('Incorrect Studio PIN. Access restricted.', 'warning');
+    return false;
+  };
+
+  const lockStudio = () => {
+    setIsStudioUnlocked(false);
+    setViewMode('client');
+    try {
+      sessionStorage.removeItem('atx_studio_unlocked');
+    } catch (e) {
+      console.error(e);
+    }
+    showToast('Studio OS locked. Switched to Client Experience.', 'info');
+  };
+
+  const updateBankDetails = (details: Partial<typeof bankDetails>) => {
+    setBankDetails((prev) => {
+      const updated = { ...prev, ...details };
+      try {
+        localStorage.setItem('atx_studio_bank_details', JSON.stringify(updated));
+      } catch (e) {
+        console.error(e);
+      }
+      return updated;
+    });
+    showToast('Bank transfer details updated successfully', 'success');
+  };
 
   // Local storage synchronization
   useEffect(() => {
@@ -451,12 +556,14 @@ Total Commission Value: ₦${order.quotedPrice.toLocaleString()}
 Initial Working Deposit (60%): ₦${order.depositAmount.toLocaleString()}
 Remaining Balance on Fitting: ₦${(order.quotedPrice - order.depositAmount).toLocaleString()}
 
-*Payment Details:*
-Bank: GTBank / Zenith Bank
-Account Name: ATX FASHION STUDIO
-Account No: 0123456789
+*Official Bank Transfer Details:*
+Bank: ${bankDetails.bankName}
+Account Name: ${bankDetails.accountName}
+Account No: ${bankDetails.accountNumber}
+Narration: Ref ${order.id}
 
-_Kindly send transfer receipt upon payment to initiate pattern cutting._`;
+_${bankDetails.note}_
+_Kindly attach payment receipt on WhatsApp to initiate fabric procurement & cutting._`;
   };
 
   const resetToDefaults = () => {
@@ -474,6 +581,7 @@ _Kindly send transfer receipt upon payment to initiate pattern cutting._`;
   const exportDatabaseJSON = () => {
     const payload = {
       exportTimestamp: new Date().toISOString(),
+      bankDetails,
       orders,
       measurementCards,
       rtwItems,
@@ -503,6 +611,9 @@ _Kindly send transfer receipt upon payment to initiate pattern cutting._`;
       }
       if (parsed.bulkContracts && Array.isArray(parsed.bulkContracts)) {
         setBulkContracts(parsed.bulkContracts);
+      }
+      if (parsed.bankDetails) {
+        setBankDetails(parsed.bankDetails);
       }
       showToast('Database backup successfully restored!', 'success');
       return true;
@@ -544,6 +655,13 @@ _Kindly send transfer receipt upon payment to initiate pattern cutting._`;
         calculatePricing,
         generateWhatsAppOrderMessage,
         generateWhatsAppInvoice,
+        isStudioUnlocked,
+        unlockStudio,
+        lockStudio,
+        studioPin,
+        setStudioPin,
+        bankDetails,
+        updateBankDetails,
         resetToDefaults,
         exportDatabaseJSON,
         importDatabaseJSON

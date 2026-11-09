@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import { useAtelier } from '../../context/AtelierContext';
 import { GarmentCategory, CollectionTier } from '../../types/atelier';
-import { Check, ArrowRight, ArrowLeft, Ruler, Sparkles, ShieldCheck, MessageCircle } from 'lucide-react';
+import { Check, ArrowRight, ArrowLeft, Ruler, Sparkles, ShieldCheck, MessageCircle, Copy, Building2 } from 'lucide-react';
 
 interface SilhouetteOption {
   id: string;
@@ -83,7 +83,15 @@ const SILHOUETTES: SilhouetteOption[] = [
 ];
 
 export const BespokeBuilder: React.FC = () => {
-  const { measurementCards, createOrder, calculatePricing, showToast, setActiveClientView } = useAtelier();
+  const { measurementCards, createOrder, calculatePricing, showToast, setActiveClientView, bankDetails } = useAtelier();
+  const [copiedAccount, setCopiedAccount] = useState(false);
+
+  const copyBankToClipboard = () => {
+    navigator.clipboard.writeText(bankDetails.accountNumber);
+    setCopiedAccount(true);
+    showToast(`Copied ${bankDetails.bankName} Account (${bankDetails.accountNumber})`, 'success');
+    setTimeout(() => setCopiedAccount(false), 2500);
+  };
 
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
 
@@ -185,7 +193,19 @@ export const BespokeBuilder: React.FC = () => {
 
     // WhatsApp Message
     const text = encodeURIComponent(
-      `*ATX FASHION STUDIO BESPOKE COMMISSION*\nHello, I have submitted a bespoke commission for the *${selectedSilhouette.title}* (Ref: *${created.id}*).\n\n• Client: ${clientName.trim()}\n• Fabric: ${fabricType} (${colorChoice})\n• Quoted Investment: ₦${financials.recommendedRetailPrice.toLocaleString()}\n• Initial Working Deposit (60%): ₦${financials.requiredDepositAmount.toLocaleString()}\n\nPlease confirm consultation & measurement schedule.`
+      `*ATX FASHION STUDIO BESPOKE COMMISSION*\n` +
+      `Hello, I have submitted a bespoke commission for the *${selectedSilhouette.title}* (Ref: *${created.id}*).\n\n` +
+      `• Patron: ${clientName.trim()}\n` +
+      `• Garment: ${selectedSilhouette.title} (${tier.toUpperCase()} Tier)\n` +
+      `• Fabric: ${fabricType} (${colorChoice})\n` +
+      `• Quoted Value: ₦${financials.recommendedRetailPrice.toLocaleString()}\n` +
+      `• Working Deposit (60%): ₦${financials.requiredDepositAmount.toLocaleString()}\n\n` +
+      `*Bank Payment Details:*\n` +
+      `Bank: ${bankDetails.bankName}\n` +
+      `Account: ${bankDetails.accountNumber}\n` +
+      `Name: ${bankDetails.accountName}\n` +
+      `Narration: Ref ${created.id}\n\n` +
+      `I will send my transfer receipt once payment is completed to begin fabric procurement.`
     );
 
     window.open(`https://wa.me/2348150882291?text=${text}`, '_blank');
@@ -737,6 +757,50 @@ export const BespokeBuilder: React.FC = () => {
                   ₦{financials.requiredDepositAmount.toLocaleString()}
                 </span>
               </div>
+            </div>
+
+            {/* Official Bank Deposit Card (Lean ₦0-₦200k PRD Model) */}
+            <div className="p-4 rounded-lg bg-[#141211] border border-[#D4AF37]/40 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Building2 className="w-4 h-4 text-[#D4AF37]" />
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#D4AF37]">
+                    Official Studio Bank Transfer
+                  </span>
+                </div>
+                <span className="text-[10px] text-[#F4EFEA]/60 bg-[#221F1C] px-2 py-0.5 rounded border border-white/10">
+                  Instant Verification
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs bg-[#1A1816] p-3 rounded border border-white/5">
+                <div>
+                  <span className="text-[10px] uppercase tracking-wider text-[#F4EFEA]/50 block">Bank Name</span>
+                  <span className="font-medium text-[#F4EFEA]">{bankDetails.bankName}</span>
+                </div>
+                <div>
+                  <span className="text-[10px] uppercase tracking-wider text-[#F4EFEA]/50 block">Account Name</span>
+                  <span className="font-medium text-[#F4EFEA] truncate block">{bankDetails.accountName}</span>
+                </div>
+                <div className="sm:col-span-2 flex items-center justify-between pt-1 border-t border-white/5">
+                  <div>
+                    <span className="text-[10px] uppercase tracking-wider text-[#F4EFEA]/50 block">NUBAN Account Number</span>
+                    <span className="font-mono text-base font-bold text-[#D4AF37] tracking-wider">{bankDetails.accountNumber}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={copyBankToClipboard}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#D4AF37]/15 hover:bg-[#D4AF37]/25 text-[#D4AF37] border border-[#D4AF37]/30 text-xs font-medium transition-colors cursor-pointer"
+                  >
+                    {copiedAccount ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedAccount ? 'Copied!' : 'Copy Account'}</span>
+                  </button>
+                </div>
+              </div>
+
+              <p className="text-[11px] text-[#F4EFEA]/60 italic leading-relaxed">
+                {bankDetails.note}
+              </p>
             </div>
           </div>
 

@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useAtelier } from '../../context/AtelierContext';
-import { Sparkles, SlidersHorizontal, ShoppingBag, Scissors, Search, BarChart3, Database } from 'lucide-react';
+import { Sparkles, SlidersHorizontal, ShoppingBag, Scissors, Search, BarChart3, Database, Lock, Unlock } from 'lucide-react';
+import { PinModal } from './PinModal';
 
 export const TopBar: React.FC = () => {
   const {
@@ -15,8 +16,12 @@ export const TopBar: React.FC = () => {
     setActiveClientView,
     activeStudioTab,
     setActiveStudioTab,
+    isStudioUnlocked,
+    lockStudio,
     exportDatabaseJSON
   } = useAtelier();
+
+  const [isPinModalOpen, setIsPinModalOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-40 bg-[#121110]/95 backdrop-blur-md border-b border-[#D4AF37]/20 px-6 py-3.5 transition-colors">
@@ -137,40 +142,56 @@ export const TopBar: React.FC = () => {
 
         {/* Zone 3: Mode Switch & Primary Action */}
         <div className="flex items-center gap-3 shrink-0">
-          {/* Dual-Mode Applet Toggle */}
-          <button
-            onClick={() => {
-              const nextMode = viewMode === 'client' ? 'studio' : 'client';
-              setViewMode(nextMode);
-            }}
-            className="flex items-center gap-2 px-3 py-1.5 rounded border border-[#D4AF37]/40 bg-[#1C1A18] text-[#D4AF37] hover:bg-[#D4AF37]/10 transition-colors text-xs font-medium whitespace-nowrap shrink-0"
-            title="Switch between client luxury storefront and internal ATX management console"
-          >
-            {viewMode === 'client' ? (
-              <>
-                <SlidersHorizontal className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Studio OS</span>
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-3.5 h-3.5" />
+          {/* Dual-Mode Applet Toggle with PIN Security */}
+          {viewMode === 'client' ? (
+            <button
+              onClick={() => {
+                if (isStudioUnlocked) {
+                  setViewMode('studio');
+                } else {
+                  setIsPinModalOpen(true);
+                }
+              }}
+              className="flex items-center gap-2 px-3 py-1.5 rounded border border-[#D4AF37]/40 bg-[#1C1A18] text-[#D4AF37] hover:bg-[#D4AF37]/10 transition-colors text-xs font-medium whitespace-nowrap shrink-0 cursor-pointer"
+              title="Restricted Studio OS (Protected by Master Tailor PIN)"
+            >
+              <Lock className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span className="hidden sm:inline">Studio OS</span>
+            </button>
+          ) : (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setViewMode('client')}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-white/20 bg-[#1C1A18] text-[#F4EFEA]/80 hover:text-[#F4EFEA] hover:bg-white/5 transition-colors text-xs font-medium whitespace-nowrap shrink-0 cursor-pointer"
+                title="View storefront as client sees it"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
                 <span className="hidden sm:inline">Client View</span>
-              </>
-            )}
-          </button>
+              </button>
+
+              <button
+                onClick={lockStudio}
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors text-xs font-medium whitespace-nowrap shrink-0 cursor-pointer"
+                title="Lock Studio OS and return to public storefront"
+              >
+                <Lock className="w-3 h-3" />
+                <span className="hidden md:inline">Lock OS</span>
+              </button>
+            </div>
+          )}
 
           {/* Primary CTA */}
           {viewMode === 'client' ? (
             <button
               onClick={() => setActiveClientView('bespoke')}
-              className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-[#121110] bg-[#D4AF37] hover:bg-[#C59B27] rounded transition-all shadow-sm whitespace-nowrap shrink-0"
+              className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-[#121110] bg-[#D4AF37] hover:bg-[#C59B27] rounded transition-all shadow-sm whitespace-nowrap shrink-0 cursor-pointer"
             >
               Commission Bespoke
             </button>
           ) : (
             <button
               onClick={exportDatabaseJSON}
-              className="px-3.5 py-2 text-xs font-medium uppercase tracking-wider text-[#F4EFEA] bg-[#2A2624] hover:bg-[#36312E] border border-white/10 rounded transition-all whitespace-nowrap shrink-0 flex items-center gap-1.5"
+              className="px-3.5 py-2 text-xs font-medium uppercase tracking-wider text-[#F4EFEA] bg-[#2A2624] hover:bg-[#36312E] border border-white/10 rounded transition-all whitespace-nowrap shrink-0 flex items-center gap-1.5 cursor-pointer"
             >
               <Database className="w-3.5 h-3.5 text-[#D4AF37]" />
               <span className="hidden sm:inline">Backup Data</span>
@@ -178,6 +199,16 @@ export const TopBar: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* PIN Security Modal */}
+      <PinModal
+        isOpen={isPinModalOpen}
+        onClose={() => setIsPinModalOpen(false)}
+        onSuccess={() => {
+          setIsPinModalOpen(false);
+          setViewMode('studio');
+        }}
+      />
     </header>
   );
 };
