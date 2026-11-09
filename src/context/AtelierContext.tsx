@@ -126,7 +126,12 @@ export const AtelierProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [rtwItems, setRtwItems] = useState<RTWItem[]>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.RTW);
-      return saved ? JSON.parse(saved) : INITIAL_RTW_ITEMS;
+      if (!saved) return INITIAL_RTW_ITEMS;
+      const parsed: RTWItem[] = JSON.parse(saved);
+      return parsed.map((item) => ({
+        ...item,
+        image: item.image?.replace('/src/assets/images/', '/assets/images/') || item.image
+      }));
     } catch {
       return INITIAL_RTW_ITEMS;
     }

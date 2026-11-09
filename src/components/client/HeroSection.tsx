@@ -70,7 +70,7 @@ export const HeroSection: React.FC = () => {
             <div className="lg:col-span-6 relative">
               <div className="relative aspect-[4/3] sm:aspect-[16/11] rounded-lg overflow-hidden border border-[#D4AF37]/20 shadow-2xl">
                 <img
-                  src="/src/assets/images/hero_african_luxury_couture_1794057022168.jpg"
+                  src="/assets/images/hero_african_luxury_couture_1794057022168.jpg"
                   alt="ATX FASHION STUDIO Modern African Haute Couture Lookbook"
                   className="w-full h-full object-cover object-center transform hover:scale-102 transition-transform duration-700"
                   referrerPolicy="no-referrer"
@@ -187,7 +187,7 @@ export const HeroSection: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-8 md:p-12 rounded-xl bg-gradient-to-br from-[#1C1A18] to-[#121110] border border-[#D4AF37]/20">
           <div className="lg:col-span-5 aspect-[4/3] rounded-lg overflow-hidden border border-white/10">
             <img
-              src="/src/assets/images/studio_tailoring_craftsmanship_1794057024690.jpg"
+              src="/assets/images/studio_tailoring_craftsmanship_1794057024690.jpg"
               alt="Artisanal Handcraft at ATX FASHION STUDIO"
               className="w-full h-full object-cover"
               referrerPolicy="no-referrer"

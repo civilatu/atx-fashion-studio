@@ -16,7 +16,7 @@ export const INITIAL_RTW_ITEMS: RTWItem[] = [
     fabric: 'Italian Cashmere-Wool Blend & Bronze Silk Thread',
     availableSizes: ['S', 'M', 'L', 'XL', 'XXL'],
     stockCount: 4,
-    image: '/src/assets/images/rtw_mens_senator_agbada_1794057023495.jpg',
+    image: '/assets/images/rtw_mens_senator_agbada_1794057023495.jpg',
     highlights: ['Includes tapered trousers with hidden expander', 'Concealed front zip placket', 'Breathable cotton pocket lining']
   },
   {
@@ -29,7 +29,7 @@ export const INITIAL_RTW_ITEMS: RTWItem[] = [
     fabric: 'Authentic Nigerian Ankara Wax & Stiffened Tulle Foundation',
     availableSizes: ['UK 8', 'UK 10', 'UK 12', 'UK 14'],
     stockCount: 2,
-    image: '/src/assets/images/rtw_womens_ankara_evening_1794057025772.jpg',
+    image: '/assets/images/rtw_womens_ankara_evening_1794057025772.jpg',
     highlights: ['Internal corset with 12 flexible steel bones', 'High-slit architectural draping', 'Double-faced French seams']
   },
   {
@@ -42,7 +42,7 @@ export const INITIAL_RTW_ITEMS: RTWItem[] = [
     fabric: 'Heavy Damask Wool & Metallic Bullion Cordwork',
     availableSizes: ['M', 'L', 'XL'],
     stockCount: 3,
-    image: '/src/assets/images/hero_african_luxury_couture_1794057022168.jpg',
+    image: '/assets/images/hero_african_luxury_couture_1794057022168.jpg',
     highlights: ['Full 160-inch shoulder drape span', 'Hand-stitched bullion neck cordon', 'Custom matching fila cap included']
   },
   {
@@ -55,7 +55,7 @@ export const INITIAL_RTW_ITEMS: RTWItem[] = [
     fabric: '100% Breathable Crisp Cotton Poplin',
     availableSizes: ['S', 'M', 'L', 'XL'],
     stockCount: 8,
-    image: '/src/assets/images/studio_tailoring_craftsmanship_1794057024690.jpg',
+    image: '/assets/images/studio_tailoring_craftsmanship_1794057024690.jpg',
     highlights: ['Reinforced collar stays', 'Machine washable cold', 'Understated mother-of-pearl buttons']
   }
 ];
