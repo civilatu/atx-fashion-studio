@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useAtelier } from '../../context/AtelierContext';
-import { Mic, MicOff, Volume2, VolumeX, X, Sparkles, MessageCircle, ArrowRight, HelpCircle } from 'lucide-react';
+import { Mic, MicOff, Volume2, VolumeX, X, Sparkles, MessageCircle, ArrowRight, HelpCircle, Copy, Check, ExternalLink } from 'lucide-react';
 
 // SpeechRecognition type declarations for browsers
 declare global {
@@ -22,6 +22,7 @@ export const VoiceConcierge: React.FC = () => {
     setActiveClientView,
     setActiveStudioTab,
     isStudioUnlocked,
+    unlockStudio,
     lockStudio,
     bankDetails,
     showToast
@@ -35,6 +36,7 @@ export const VoiceConcierge: React.FC = () => {
   const [manualInput, setManualInput] = useState('');
   const [isSupported, setIsSupported] = useState(true);
   const [showHelp, setShowHelp] = useState(false);
+  const [copiedBank, setCopiedBank] = useState(false);
 
   const recognitionRef = useRef<any>(null);
 
@@ -123,250 +125,291 @@ export const VoiceConcierge: React.FC = () => {
     }
   };
 
+  // Helper that executes an action, provides visual/voice feedback, and auto-closes dialog so user sees the page
+  const executeAndClose = (
+    action: () => void,
+    message: string,
+    spokenText?: string,
+    autoCloseDelayMs = 700
+  ) => {
+    action();
+    setFeedbackMessage(message);
+    speak(spokenText || message);
+    showToast(message, 'success');
+
+    if (autoCloseDelayMs > 0) {
+      setTimeout(() => {
+        setIsOpen(false);
+      }, autoCloseDelayMs);
+    }
+  };
+
   const processCommand = (rawText: string) => {
-    const command = rawText.toLowerCase().trim();
+    const cmd = rawText.toLowerCase().trim();
 
-    // 1. Navigation: Ready to Wear / Catalog
+    // 1. Ready-to-Wear / Designs / Patterns / Catalog / Clothes / Outfits / Gowns / Senator
     if (
-      command.includes('ready to wear') ||
-      command.includes('rtw') ||
-      command.includes('collection') ||
-      command.includes('catalog') ||
-      command.includes('shop') ||
-      command.includes('store') ||
-      command.includes('dresses')
+      cmd.includes('design') ||
+      cmd.includes('pattern') ||
+      cmd.includes('sample') ||
+      cmd.includes('ready to wear') ||
+      cmd.includes('rtw') ||
+      cmd.includes('collection') ||
+      cmd.includes('catalog') ||
+      cmd.includes('shop') ||
+      cmd.includes('store') ||
+      cmd.includes('dress') ||
+      cmd.includes('clothes') ||
+      cmd.includes('outfit') ||
+      cmd.includes('gown') ||
+      cmd.includes('kaftan') ||
+      cmd.includes('suit')
     ) {
-      setViewMode('client');
-      setActiveClientView('rtw');
-      const response = 'Opening the Ready-to-Wear collection.';
-      setFeedbackMessage(response);
-      speak(response);
-      showToast(response, 'success');
+      executeAndClose(
+        () => {
+          setViewMode('client');
+          setActiveClientView('rtw');
+        },
+        'Opening Ready-to-Wear Collection & Sample Designs',
+        'Opening the Ready-to-Wear collection and sample designs.'
+      );
       return;
     }
 
-    // 2. Navigation: Bespoke / Custom Tailoring / Agbada / Senator
+    // 2. Bespoke / Custom Tailoring / Agbada / Commission
     if (
-      command.includes('bespoke') ||
-      command.includes('custom') ||
-      command.includes('commission') ||
-      command.includes('tailor') ||
-      command.includes('agbada') ||
-      command.includes('senator') ||
-      command.includes('make outfit')
+      cmd.includes('bespoke') ||
+      cmd.includes('custom') ||
+      cmd.includes('commission') ||
+      cmd.includes('tailor') ||
+      cmd.includes('agbada') ||
+      cmd.includes('make outfit') ||
+      cmd.includes('sew') ||
+      cmd.includes('stitching')
     ) {
-      setViewMode('client');
-      setActiveClientView('bespoke');
-      const response = 'Opening the Bespoke Tailoring Studio for your custom commission.';
-      setFeedbackMessage(response);
-      speak(response);
-      showToast(response, 'success');
+      executeAndClose(
+        () => {
+          setViewMode('client');
+          setActiveClientView('bespoke');
+        },
+        'Opening Bespoke Tailoring Studio',
+        'Opening the Bespoke Tailoring Studio for your custom commission.'
+      );
       return;
     }
 
-    // 3. Navigation: Track Commission / Order Status
+    // 3. Track Commission / Order Status / Delivery
     if (
-      command.includes('track') ||
-      command.includes('order status') ||
-      command.includes('where is my order') ||
-      command.includes('where is my dress') ||
-      command.includes('check order')
+      cmd.includes('track') ||
+      cmd.includes('order status') ||
+      cmd.includes('where is my order') ||
+      cmd.includes('where is my dress') ||
+      cmd.includes('delivery') ||
+      cmd.includes('check order') ||
+      cmd.includes('receipt') ||
+      cmd.includes('progress')
     ) {
-      setViewMode('client');
-      setActiveClientView('track');
-      const response = 'Opening Commission Tracker. Enter your reference ID to view real-time progress.';
-      setFeedbackMessage(response);
-      speak(response);
-      showToast(response, 'success');
+      executeAndClose(
+        () => {
+          setViewMode('client');
+          setActiveClientView('track');
+        },
+        'Opening Commission Tracker',
+        'Opening Commission Tracker. Enter your reference ID to view real-time progress.'
+      );
       return;
     }
 
-    // 4. Navigation: Lookbook / Home / Heritage
+    // 4. Lookbook / Home / Heritage / Brand
     if (
-      command.includes('lookbook') ||
-      command.includes('home') ||
-      command.includes('heritage') ||
-      command.includes('front page') ||
-      command.includes('welcome')
+      cmd.includes('lookbook') ||
+      cmd.includes('home') ||
+      cmd.includes('heritage') ||
+      cmd.includes('front page') ||
+      cmd.includes('welcome') ||
+      cmd.includes('brand') ||
+      cmd.includes('african luxury')
     ) {
-      setViewMode('client');
-      setActiveClientView('lookbook');
-      const response = 'Returning to the ATX Lookbook and Heritage showcase.';
-      setFeedbackMessage(response);
-      speak(response);
-      showToast(response, 'success');
+      executeAndClose(
+        () => {
+          setViewMode('client');
+          setActiveClientView('lookbook');
+        },
+        'Opening Lookbook & Heritage Showcase',
+        'Returning to the ATX Lookbook and Heritage showcase.'
+      );
       return;
     }
 
-    // 5. Navigation: Personal Styling / Consultation
+    // 5. Personal Styling / Consultation / Wardrobe
     if (
-      command.includes('styling') ||
-      command.includes('consultation') ||
-      command.includes('wardrobe') ||
-      command.includes('advisor')
+      cmd.includes('styling') ||
+      cmd.includes('consultation') ||
+      cmd.includes('wardrobe') ||
+      cmd.includes('advisor') ||
+      cmd.includes('appointment') ||
+      cmd.includes('meeting')
     ) {
-      setViewMode('client');
-      setActiveClientView('styling');
-      const response = 'Opening Personal Styling & Wardrobe Consultation.';
-      setFeedbackMessage(response);
-      speak(response);
-      showToast(response, 'success');
+      executeAndClose(
+        () => {
+          setViewMode('client');
+          setActiveClientView('styling');
+        },
+        'Opening Personal Styling & Consultation',
+        'Opening Personal Styling & Wardrobe Consultation.'
+      );
       return;
     }
 
-    // 6. Bank Details & Deposit Policy
+    // 6. Bank Details & Payment / Transfer
     if (
-      command.includes('bank') ||
-      command.includes('account number') ||
-      command.includes('how to pay') ||
-      command.includes('payment') ||
-      command.includes('transfer')
+      cmd.includes('bank') ||
+      cmd.includes('account number') ||
+      cmd.includes('how to pay') ||
+      cmd.includes('payment') ||
+      cmd.includes('transfer') ||
+      cmd.includes('nuban')
     ) {
-      const response = `Official studio bank is ${bankDetails.bankName}, account number ${bankDetails.accountNumber}.`;
-      setFeedbackMessage(response);
-      speak(response);
-      showToast(`Bank: ${bankDetails.bankName} | Account: ${bankDetails.accountNumber}`, 'info');
+      navigator.clipboard?.writeText(bankDetails.accountNumber);
+      setCopiedBank(true);
+      setTimeout(() => setCopiedBank(false), 3000);
+
+      const msg = `Bank: ${bankDetails.bankName} | Account: ${bankDetails.accountNumber} (${bankDetails.accountName}). Number copied to clipboard!`;
+      const spoken = `Official studio bank is ${bankDetails.bankName}, account number ${bankDetails.accountNumber}. The number has been copied to your clipboard.`;
+      
+      executeAndClose(
+        () => {
+          setViewMode('client');
+          setActiveClientView('bespoke');
+        },
+        msg,
+        spoken,
+        1500
+      );
       return;
     }
 
-    if (command.includes('deposit') || command.includes('60 percent')) {
-      const response = 'ATX Studio operates on a 60% commitment deposit before fabric sourcing and pattern cutting begin.';
-      setFeedbackMessage(response);
-      speak(response);
-      showToast(response, 'info');
+    // 7. Deposit Policy (60%)
+    if (cmd.includes('deposit') || cmd.includes('60 percent') || cmd.includes('upfront')) {
+      const msg = 'ATX Studio operates on a 60% commitment deposit before fabric sourcing begins.';
+      setFeedbackMessage(msg);
+      speak(msg);
+      showToast(msg, 'info');
       return;
     }
 
-    // 7. Contact / WhatsApp Desk
+    // 8. WhatsApp Desk & Contact
     if (
-      command.includes('whatsapp') ||
-      command.includes('contact') ||
-      command.includes('phone') ||
-      command.includes('call') ||
-      command.includes('talk to someone')
+      cmd.includes('whatsapp') ||
+      cmd.includes('contact') ||
+      cmd.includes('phone') ||
+      cmd.includes('call') ||
+      cmd.includes('talk to someone') ||
+      cmd.includes('08150882291') ||
+      cmd.includes('desk') ||
+      cmd.includes('chat')
     ) {
-      const response = 'Opening the ATX Studio WhatsApp Desk at 08150882291.';
-      setFeedbackMessage(response);
-      speak(response);
-      showToast(response, 'success');
-      window.open('https://wa.me/2348150882291', '_blank');
+      executeAndClose(
+        () => {
+          window.open('https://wa.me/2348150882291', '_blank');
+        },
+        'Connecting to ATX Studio WhatsApp Desk (08150882291)',
+        'Opening the ATX Studio WhatsApp Desk at 08150882291.',
+        1000
+      );
       return;
     }
 
-    // 8. Size Guide
+    // 9. Size Guide
     if (
-      command.includes('size guide') ||
-      command.includes('sizing') ||
-      command.includes('size chart') ||
-      command.includes('measure')
+      cmd.includes('size guide') ||
+      cmd.includes('sizing') ||
+      cmd.includes('size chart') ||
+      cmd.includes('measurements guide') ||
+      cmd.includes('what size')
     ) {
-      setViewMode('client');
-      setActiveClientView('rtw');
-      const response = 'Displaying the ATX Master Tailoring anatomical size guide.';
-      setFeedbackMessage(response);
-      speak(response);
-      showToast(response, 'info');
+      executeAndClose(
+        () => {
+          setViewMode('client');
+          setActiveClientView('rtw');
+        },
+        'Opening Ready-to-Wear Catalog with Size Chart',
+        'Displaying the ATX Master Tailoring anatomical size guide.'
+      );
       return;
     }
 
-    // 9. Studio OS Backstage Commands
+    // 10. Studio OS Backstage Navigation & PIN Unlock by Voice
     if (
-      command.includes('studio os') ||
-      command.includes('studio management') ||
-      command.includes('backstage') ||
-      command.includes('pipeline') ||
-      command.includes('kanban')
+      cmd.includes('studio') ||
+      cmd.includes('pipeline') ||
+      cmd.includes('backstage') ||
+      cmd.includes('kanban') ||
+      cmd.includes('costing') ||
+      cmd.includes('calculator') ||
+      cmd.includes('vault') ||
+      cmd.includes('bulk') ||
+      cmd.includes('uniform') ||
+      cmd.includes('analytics') ||
+      cmd.includes('kpi') ||
+      cmd.includes('profit')
     ) {
-      if (isStudioUnlocked) {
-        setViewMode('studio');
-        setActiveStudioTab('pipeline');
-        const response = 'Opening Studio OS 10-Stage Production Pipeline.';
-        setFeedbackMessage(response);
-        speak(response);
-        showToast(response, 'success');
+      // Voice PIN unlock check
+      if (!isStudioUnlocked && (cmd.includes('2026') || cmd.includes('unlock'))) {
+        unlockStudio('2026');
+      }
+
+      const unlockedNow = isStudioUnlocked || cmd.includes('2026');
+
+      if (unlockedNow) {
+        let tab: any = 'pipeline';
+        let tabLabel = '10-Stage Pipeline';
+
+        if (cmd.includes('cost') || cmd.includes('calculator') || cmd.includes('margin')) {
+          tab = 'costing';
+          tabLabel = 'Pricing & Margin Engine';
+        } else if (cmd.includes('vault') || cmd.includes('measurement')) {
+          tab = 'measurements';
+          tabLabel = 'Measurement Vault';
+        } else if (cmd.includes('bulk') || cmd.includes('uniform')) {
+          tab = 'bulk';
+          tabLabel = 'Bulk & Uniform Hub';
+        } else if (cmd.includes('analytics') || cmd.includes('kpi') || cmd.includes('profit') || cmd.includes('revenue')) {
+          tab = 'analytics';
+          tabLabel = 'Studio Financial KPIs';
+        }
+
+        executeAndClose(
+          () => {
+            setViewMode('studio');
+            setActiveStudioTab(tab);
+          },
+          `Opening Studio OS: ${tabLabel}`,
+          `Opening Studio OS: ${tabLabel}.`
+        );
       } else {
-        const response = 'Studio OS is PIN-protected. Please click Studio OS in the top bar to enter your 4-digit PIN.';
-        setFeedbackMessage(response);
-        speak(response);
-        showToast(response, 'warning');
+        const msg = 'Studio OS is PIN-protected. Say "Unlock Studio 2026" or click Studio OS in the top bar.';
+        setFeedbackMessage(msg);
+        speak('Studio OS is PIN-protected. You can say Unlock Studio 2026 or enter your PIN in the top bar.');
+        showToast(msg, 'warning');
       }
       return;
     }
 
-    if (command.includes('costing') || command.includes('margin') || command.includes('calculator')) {
-      if (isStudioUnlocked) {
-        setViewMode('studio');
-        setActiveStudioTab('costing');
-        const response = 'Opening the Garment Pricing and Margin Engine.';
-        setFeedbackMessage(response);
-        speak(response);
-        showToast(response, 'success');
-      } else {
-        const response = 'Pricing engine is restricted to authorized studio personnel.';
-        setFeedbackMessage(response);
-        speak(response);
-      }
-      return;
-    }
-
-    if (command.includes('vault') || command.includes('client measurements')) {
-      if (isStudioUnlocked) {
-        setViewMode('studio');
-        setActiveStudioTab('measurements');
-        const response = 'Opening the Anatomical Measurement Vault.';
-        setFeedbackMessage(response);
-        speak(response);
-        showToast(response, 'success');
-      } else {
-        const response = 'Measurement vault requires Master Tailor PIN authorization.';
-        setFeedbackMessage(response);
-        speak(response);
-      }
-      return;
-    }
-
-    if (command.includes('bulk') || command.includes('uniform')) {
-      if (isStudioUnlocked) {
-        setViewMode('studio');
-        setActiveStudioTab('bulk');
-        const response = 'Opening the Bulk Uniform and Contract Hub.';
-        setFeedbackMessage(response);
-        speak(response);
-        showToast(response, 'success');
-      } else {
-        const response = 'Bulk contracts hub requires studio PIN.';
-        setFeedbackMessage(response);
-        speak(response);
-      }
-      return;
-    }
-
-    if (command.includes('analytics') || command.includes('kpi') || command.includes('profit') || command.includes('revenue')) {
-      if (isStudioUnlocked) {
-        setViewMode('studio');
-        setActiveStudioTab('analytics');
-        const response = 'Opening Studio KPIs and Solvency Dashboard.';
-        setFeedbackMessage(response);
-        speak(response);
-        showToast(response, 'success');
-      } else {
-        const response = 'Financial analytics are restricted to management.';
-        setFeedbackMessage(response);
-        speak(response);
-      }
-      return;
-    }
-
-    if (command.includes('lock studio') || command.includes('lock os')) {
-      lockStudio();
-      const response = 'Studio OS is now locked. Switched back to Client Experience.';
-      setFeedbackMessage(response);
-      speak(response);
+    // 11. Lock Studio OS
+    if (cmd.includes('lock studio') || cmd.includes('lock os') || cmd.includes('logout') || cmd.includes('exit studio')) {
+      executeAndClose(
+        () => {
+          lockStudio();
+        },
+        'Studio OS locked. Switched back to Client Experience.',
+        'Studio OS is now locked.'
+      );
       return;
     }
 
     // Default Fallback
-    const fallback = `I heard: "${rawText}". Try saying: "Show ready to wear", "Commission bespoke", "Track order", "Bank details", or "Connect WhatsApp".`;
+    const fallback = `I heard: "${rawText}". Try saying: "Show ready to wear", "Commission bespoke", "Track order", or "Bank details".`;
     setFeedbackMessage(fallback);
     speak('Command not recognized. Please choose from our quick voice commands.');
   };
@@ -487,12 +530,50 @@ export const VoiceConcierge: React.FC = () => {
               <div className="p-3.5 rounded-xl bg-[#121110] border border-white/10 text-xs text-[#F4EFEA]/80 leading-relaxed min-h-[52px] flex items-center justify-center text-center">
                 {feedbackMessage}
               </div>
+
+              {/* Direct Tap Shortcuts (Always available for 1-click execution) */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-xs">
+                <button
+                  type="button"
+                  onClick={() => executeAndClose(() => { setViewMode('client'); setActiveClientView('rtw'); }, 'Navigating to Ready-to-Wear')}
+                  className="p-2 rounded-lg bg-[#221F1C] hover:bg-[#D4AF37]/20 border border-white/10 text-xs text-[#F4EFEA] hover:text-[#D4AF37] transition-colors cursor-pointer text-center"
+                >
+                  RTW Catalog
+                </button>
+                <button
+                  type="button"
+                  onClick={() => executeAndClose(() => { setViewMode('client'); setActiveClientView('bespoke'); }, 'Opening Bespoke Studio')}
+                  className="p-2 rounded-lg bg-[#221F1C] hover:bg-[#D4AF37]/20 border border-white/10 text-xs text-[#F4EFEA] hover:text-[#D4AF37] transition-colors cursor-pointer text-center"
+                >
+                  Bespoke Studio
+                </button>
+                <button
+                  type="button"
+                  onClick={() => executeAndClose(() => { setViewMode('client'); setActiveClientView('track'); }, 'Opening Commission Tracker')}
+                  className="p-2 rounded-lg bg-[#221F1C] hover:bg-[#D4AF37]/20 border border-white/10 text-xs text-[#F4EFEA] hover:text-[#D4AF37] transition-colors cursor-pointer text-center"
+                >
+                  Track Order
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard?.writeText(bankDetails.accountNumber);
+                    setCopiedBank(true);
+                    showToast(`Copied ${bankDetails.bankName} Account (${bankDetails.accountNumber})`, 'success');
+                    setTimeout(() => setCopiedBank(false), 2500);
+                  }}
+                  className="p-2 rounded-lg bg-[#221F1C] hover:bg-[#D4AF37]/20 border border-white/10 text-xs text-[#F4EFEA] hover:text-[#D4AF37] transition-colors cursor-pointer text-center flex items-center justify-center gap-1"
+                >
+                  {copiedBank ? <Check className="w-3 h-3 text-[#10B981]" /> : <Copy className="w-3 h-3" />}
+                  <span>{copiedBank ? 'Copied' : 'Bank Info'}</span>
+                </button>
+              </div>
             </div>
 
             {/* Fast Quick-Action Voice Chips */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-[11px] text-[#F4EFEA]/50">
-                <span>Try saying one of these commands:</span>
+                <span>Or speak one of these instant phrases:</span>
                 <button
                   type="button"
                   onClick={() => setShowHelp(!showHelp)}
@@ -505,13 +586,13 @@ export const VoiceConcierge: React.FC = () => {
 
               <div className="flex flex-wrap gap-2">
                 {[
-                  'Show ready to wear',
+                  'Show sample designs',
                   'Commission bespoke Agbada',
                   'Track order status',
                   'What are your bank details?',
                   'Open WhatsApp studio desk',
                   'Show size guide',
-                  'Open Studio OS'
+                  'Unlock Studio 2026'
                 ].map((sample) => (
                   <button
                     key={sample}
@@ -535,13 +616,13 @@ export const VoiceConcierge: React.FC = () => {
                   Complete ATX Voice Lexicon:
                 </span>
                 <ul className="space-y-1 text-[11px] list-disc list-inside">
-                  <li><strong>"Ready to wear" / "Store"</strong>: Navigates to RTW dresses & suits.</li>
+                  <li><strong>"Show designs" / "Ready to wear" / "Patterns"</strong>: Opens the ready-to-wear showroom.</li>
                   <li><strong>"Bespoke" / "Senator" / "Agbada"</strong>: Opens the 4-step custom tailor builder.</li>
                   <li><strong>"Track" / "Where is my order"</strong>: Opens the 10-stage commission tracker.</li>
-                  <li><strong>"Bank details" / "How to pay"</strong>: Speaks and displays First Bank NUBAN.</li>
+                  <li><strong>"Bank details" / "How to pay"</strong>: Copies First Bank NUBAN and speaks details.</li>
                   <li><strong>"Size guide" / "Chart"</strong>: Displays anatomical fit measurements in inches.</li>
                   <li><strong>"WhatsApp" / "Contact desk"</strong>: Connects to 08150882291.</li>
-                  <li><strong>"Studio OS" / "Pipeline" / "Costing"</strong>: Accesses internal tailoring OS.</li>
+                  <li><strong>"Unlock Studio 2026" / "Pipeline"</strong>: Accesses internal tailoring OS.</li>
                   <li><strong>"Lock studio"</strong>: Secures internal management console.</li>
                 </ul>
               </div>
@@ -553,7 +634,7 @@ export const VoiceConcierge: React.FC = () => {
                 type="text"
                 value={manualInput}
                 onChange={(e) => setManualInput(e.target.value)}
-                placeholder="Or type any voice request here (e.g. 'Show Agbada')..."
+                placeholder="Or type any voice request here (e.g. 'Show designs', 'Track order')..."
                 className="flex-1 bg-[#121110] border border-white/10 rounded-lg px-3.5 py-2 text-xs text-[#F4EFEA] focus:border-[#D4AF37] focus:outline-none"
               />
               <button
