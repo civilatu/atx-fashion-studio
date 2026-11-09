@@ -25,7 +25,8 @@ export const VoiceConcierge: React.FC = () => {
     unlockStudio,
     lockStudio,
     bankDetails,
-    showToast
+    showToast,
+    setIsRegisterOpen
   } = useAtelier();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -320,6 +321,30 @@ export const VoiceConcierge: React.FC = () => {
       return;
     }
 
+    // 8b. New Customer / VIP Registration / Patron Profile
+    if (
+      cmd.includes('register') ||
+      cmd.includes('registration') ||
+      cmd.includes('sign up') ||
+      cmd.includes('new customer') ||
+      cmd.includes('new client') ||
+      cmd.includes('vip') ||
+      cmd.includes('patron') ||
+      cmd.includes('create account') ||
+      cmd.includes('join') ||
+      cmd.includes('profile')
+    ) {
+      executeAndClose(
+        () => {
+          setViewMode('client');
+          setIsRegisterOpen(true);
+        },
+        'Opening ATX VIP Patron Registration (10% Welcome Perk)',
+        'Opening client registration. Welcome to the ATX VIP Patron Circle.'
+      );
+      return;
+    }
+
     // 9. Size Guide
     if (
       cmd.includes('size guide') ||
@@ -586,6 +611,7 @@ export const VoiceConcierge: React.FC = () => {
 
               <div className="flex flex-wrap gap-2">
                 {[
+                  'Register new client',
                   'Show sample designs',
                   'Commission bespoke Agbada',
                   'Track order status',

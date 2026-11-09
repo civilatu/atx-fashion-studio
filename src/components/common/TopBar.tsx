@@ -5,8 +5,9 @@
 
 import React, { useState } from 'react';
 import { useAtelier } from '../../context/AtelierContext';
-import { Sparkles, SlidersHorizontal, ShoppingBag, Scissors, Search, BarChart3, Database, Lock, Unlock } from 'lucide-react';
+import { Sparkles, SlidersHorizontal, ShoppingBag, Scissors, Search, BarChart3, Database, Lock, Unlock, Crown, UserPlus } from 'lucide-react';
 import { PinModal } from './PinModal';
+import { ClientRegistrationModal } from '../client/ClientRegistrationModal';
 
 export const TopBar: React.FC = () => {
   const {
@@ -18,7 +19,9 @@ export const TopBar: React.FC = () => {
     setActiveStudioTab,
     isStudioUnlocked,
     lockStudio,
-    exportDatabaseJSON
+    exportDatabaseJSON,
+    isRegisterOpen,
+    setIsRegisterOpen
   } = useAtelier();
 
   const [isPinModalOpen, setIsPinModalOpen] = useState(false);
@@ -182,12 +185,24 @@ export const TopBar: React.FC = () => {
 
           {/* Primary CTA */}
           {viewMode === 'client' ? (
-            <button
-              onClick={() => setActiveClientView('bespoke')}
-              className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-[#121110] bg-[#D4AF37] hover:bg-[#C59B27] rounded transition-all shadow-sm whitespace-nowrap shrink-0 cursor-pointer"
-            >
-              Commission Bespoke
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsRegisterOpen(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-[#D4AF37]/60 bg-[#1C1A18] hover:bg-[#D4AF37]/15 text-[#D4AF37] text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer"
+                title="Register as a new ATX VIP Patron (10% Welcome Voucher)"
+              >
+                <Crown className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span className="hidden sm:inline">Join VIP</span>
+                <span className="text-[10px] bg-[#D4AF37]/20 px-1 py-0.5 rounded text-[#D4AF37] font-mono hidden md:inline">10% Off</span>
+              </button>
+
+              <button
+                onClick={() => setActiveClientView('bespoke')}
+                className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-[#121110] bg-[#D4AF37] hover:bg-[#C59B27] rounded transition-all shadow-sm whitespace-nowrap shrink-0 cursor-pointer"
+              >
+                Commission Bespoke
+              </button>
+            </div>
           ) : (
             <button
               onClick={exportDatabaseJSON}
@@ -208,6 +223,12 @@ export const TopBar: React.FC = () => {
           setIsPinModalOpen(false);
           setViewMode('studio');
         }}
+      />
+
+      {/* New Client VIP Registration Modal */}
+      <ClientRegistrationModal
+        isOpen={isRegisterOpen}
+        onClose={() => setIsRegisterOpen(false)}
       />
     </header>
   );

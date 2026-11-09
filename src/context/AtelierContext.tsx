@@ -90,6 +90,10 @@ interface AtelierContextType {
   };
   updateBankDetails: (details: Partial<{ bankName: string; accountNumber: string; accountName: string; note: string }>) => void;
 
+  // VIP Client Registration Modal State
+  isRegisterOpen: boolean;
+  setIsRegisterOpen: (open: boolean) => void;
+
   resetToDefaults: () => void;
   exportDatabaseJSON: () => void;
   importDatabaseJSON: (jsonString: string) => boolean;
@@ -151,6 +155,7 @@ export const AtelierProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [activeStudioTab, setActiveStudioTab] = useState<'pipeline' | 'costing' | 'measurements' | 'bulk' | 'analytics'>('pipeline');
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const [isRegisterOpen, setIsRegisterOpen] = useState<boolean>(false);
 
   // Studio OS Security PIN (Default: '2026')
   const [studioPin, setStudioPinState] = useState<string>(() => {
@@ -667,6 +672,8 @@ _Kindly attach payment receipt on WhatsApp to initiate fabric procurement & cutt
         setStudioPin,
         bankDetails,
         updateBankDetails,
+        isRegisterOpen,
+        setIsRegisterOpen,
         resetToDefaults,
         exportDatabaseJSON,
         importDatabaseJSON

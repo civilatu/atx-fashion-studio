@@ -5,10 +5,10 @@
 
 import React from 'react';
 import { useAtelier } from '../../context/AtelierContext';
-import { ArrowRight, Sparkles, Scissors, ShieldCheck, Ruler } from 'lucide-react';
+import { ArrowRight, Sparkles, Scissors, ShieldCheck, Ruler, Crown } from 'lucide-react';
 
 export const HeroSection: React.FC = () => {
-  const { setActiveClientView, rtwItems } = useAtelier();
+  const { setActiveClientView, rtwItems, setIsRegisterOpen } = useAtelier();
 
   return (
     <div className="space-y-16 pb-16">
@@ -32,20 +32,29 @@ export const HeroSection: React.FC = () => {
               </p>
 
               {/* Direct Action Group */}
-              <div className="flex flex-wrap items-center gap-4 pt-2">
+              <div className="flex flex-wrap items-center gap-3.5 pt-2">
                 <button
                   onClick={() => setActiveClientView('bespoke')}
-                  className="px-6 py-3.5 bg-[#D4AF37] hover:bg-[#C59B27] text-[#121110] text-xs font-semibold uppercase tracking-wider rounded transition-all shadow-lg flex items-center gap-2 group cursor-pointer"
+                  className="px-5 py-3.5 bg-[#D4AF37] hover:bg-[#C59B27] text-[#121110] text-xs font-semibold uppercase tracking-wider rounded transition-all shadow-lg flex items-center gap-2 group cursor-pointer"
                 >
                   <span>Commission Bespoke</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
 
                 <button
-                  onClick={() => setActiveClientView('rtw')}
-                  className="px-6 py-3.5 bg-[#1C1A18] hover:bg-[#2A2624] text-[#F4EFEA] border border-[#D4AF37]/30 text-xs font-medium uppercase tracking-wider rounded transition-all cursor-pointer"
+                  onClick={() => setIsRegisterOpen(true)}
+                  className="px-5 py-3.5 bg-[#1C1A18] hover:bg-[#2A2624] text-[#D4AF37] border border-[#D4AF37]/50 text-xs font-semibold uppercase tracking-wider rounded transition-all cursor-pointer flex items-center gap-2 group shadow-sm"
+                  title="Quick 30-second client registration with 10% welcome voucher"
                 >
-                  Explore Ready-to-Wear
+                  <Crown className="w-4 h-4 text-[#D4AF37] group-hover:scale-110 transition-transform" />
+                  <span>Register VIP Profile (10% Off)</span>
+                </button>
+
+                <button
+                  onClick={() => setActiveClientView('rtw')}
+                  className="px-5 py-3.5 bg-transparent hover:bg-white/5 text-[#F4EFEA]/80 hover:text-[#F4EFEA] border border-white/15 text-xs font-medium uppercase tracking-wider rounded transition-all cursor-pointer"
+                >
+                  Explore RTW
                 </button>
               </div>
 
